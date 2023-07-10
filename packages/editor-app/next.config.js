@@ -9,7 +9,7 @@ const nextConfig = {
     return [
       {
         source: "/github",
-        destination: "https://github.com/madaotech/track-data-modify",
+        destination: "https://github.com/madaotech/track-route-editor",
         permanent: false,
       },
     ];
