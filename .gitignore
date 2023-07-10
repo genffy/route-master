@@ -1,0 +1,24 @@
+# Editor directories and files
+
+# System files
+.DS_Store
+Thumbs.db
+*.pem
+
+# Package manager directories
+node_modules
+package-lock.json
+/.pnp
+.pnp.js
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# lint
+.eslintcache
+
+# testing
+coverage
