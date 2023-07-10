@@ -11,6 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@garmin-fit/sdk": "^21.115.0",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^4.16.2",
     "@radix-ui/react-popover": "^1.0.2",
