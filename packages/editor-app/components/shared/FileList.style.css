@@ -28,12 +28,15 @@
   background: var(--black-a6);
   transition: background 160ms ease-out;
 }
+
 .ScrollAreaScrollbar:hover {
   background: var(--black-a8);
 }
+
 .ScrollAreaScrollbar[data-orientation='vertical'] {
   width: var(--scrollbar-size);
 }
+
 .ScrollAreaScrollbar[data-orientation='horizontal'] {
   flex-direction: column;
   height: var(--scrollbar-size);
@@ -45,6 +48,7 @@
   border-radius: var(--scrollbar-size);
   position: relative;
 }
+
 /* increase target size for touch devices https://www.w3.org/WAI/WCAG21/Understanding/target-size.html */
 .ScrollAreaThumb::before {
   content: '';

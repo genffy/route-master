@@ -2,6 +2,8 @@
 const plugin = require("tailwindcss/plugin");
 
 module.exports = {
+  // TODO fix modify classname fast refresh too slow
+  mode: 'jit',
   content: ["./app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
   future: {
     hoverOnlyWhenSupported: true,

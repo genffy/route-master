@@ -1,18 +1,12 @@
-"use client";
-
-import FileList from '@/components/shared/file-list'
-import MapEditor from '@/components/shared/map-editor';
+import FileList from '@/components/shared/FileList'
+import MapEditor from '@/components/shared/MapEditor';
 
 export default async function Edit() {
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      <div className='left-0 z-40 w-64'>
-        <FileList files={[]}></FileList>
-      </div>
-      <div className="container">
-        <MapEditor routes={[]}></MapEditor>
-      </div>
+    <div className='min-h-screen w-full'>
+      <FileList files={[]}></FileList>
+      <MapEditor routes={[]}></MapEditor>
     </div>
   );
 }

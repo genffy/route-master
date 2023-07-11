@@ -1,4 +1,7 @@
+"use client";
+
 import { useEffect, useRef } from 'react';
+import "./MapEditor.style.css";
 type Route = {}
 
 type MapEditorProps = {
@@ -29,9 +32,7 @@ export default function MapEditor({ routes }: MapEditorProps) {
       <link rel="stylesheet" type="text/css" href="https://api.map.baidu.com/res/webgl/10/bmap.css" />
       {/*eslint-disable-next-line @next/next/no-sync-scripts*/}
       <script type="text/javascript" src="https://api.map.baidu.com/getscript?type=webgl&v=1.0&ak=bmsPafLAscGa1GrwRubGzy5iSCIqYSaC&services=&t=20230706173803"></script>
-      <div style={{
-        overflow: "hidden", width: "100%", height: "100%", margin: 0, fontFamily: "微软雅黑",
-      }} ref={mapRef}></div>
+      <div id="map-content" ref={mapRef}></div>
     </>
   )
 }
