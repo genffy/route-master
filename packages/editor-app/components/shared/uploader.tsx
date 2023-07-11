@@ -1,6 +1,6 @@
 
-// TODO: Implement uploader component
-import Modal from "@/components/shared/modal";
+"use client";
+import { FileIcon } from '@radix-ui/react-icons'
 import {
   useState,
   Dispatch,
@@ -8,65 +8,50 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import Image from "next/image";
-import { APP_DOMAIN_URL } from "@/lib/constants";
+import {useDropzone} from 'react-dropzone'
 
-const UploaderModal = ({
-  showUploaderModal,
-  setShowUploaderModal,
-}: {
-  showUploaderModal: boolean;
-  setShowUploaderModal: Dispatch<SetStateAction<boolean>>;
-}) => {
-  // FIXME: remove any
-  const [fit, setFit] = useState<any>(null);
-
-  async function decodeFit() {
-    const body = new FormData();
-    body.append("file", fit);
-    const { data } = await fetch('/api/fit', {
-      method: 'POSt',
-      body
-    }).then(res => res.json())
-    console.log(data)
-  }
-  const uploadToClient = (event: React.FormEvent<HTMLInputElement>) => {
-    if (event.currentTarget.files && event.currentTarget.files[0]) {
-      const i = event.currentTarget.files[0];
-      setFit(i);
+export default function Uploader() {
+  const [activeFiles, setActiveFiles] = useState<File[]>();
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    // Do something with the files
+    if(activeFiles){
+      setActiveFiles([...activeFiles, ...acceptedFiles]);
+    }else {
+      setActiveFiles([...acceptedFiles]);
     }
-  };
+  }, [])
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+  // const uploadToClient = (event: React.FormEvent<HTMLInputElement>) => {
+  //   if (event.currentTarget.files && event.currentTarget.files[0]) {
+  //     const i = event.currentTarget.files[0];
+  //     setActiveFiles([...activeFiles, i]);
+  //   }
+  // };
   return (
-    <Modal showModal={showUploaderModal} setShowModal={setShowUploaderModal}>
-      <div className="w-full overflow-hidden md:max-w-md md:rounded-2xl md:border md:border-gray-100 md:shadow-xl">
-        <div className="flex flex-col items-center justify-center space-y-3 bg-white px-4 py-6 pt-8 text-center md:px-16">
-          <input type="file" placeholder="please select FIT file" accept=".fit" onChange={uploadToClient} />
-          <button
-            onClick={() => decodeFit()}
-            className="flex w-36 items-center justify-center rounded-md border border-gray-300 px-3 py-2 transition-all duration-75 hover:border-gray-800 focus:outline-none active:bg-gray-100"
-          >
-            <p className="text-gray-600">Decode Fit</p>
-          </button>
-        </div>
-      </div>
-    </Modal>
-  );
-};
+    <>
+    <div className="flex items-center justify-center w-full">
+      <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+             <FileIcon></FileIcon>
+              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+          </div>
+          <input id="dropzone-file" type="file" className="hidden" />
+      </label>
+  </div>
 
-export function useUploaderModal() {
-  const [showUploaderModal, setShowUploaderModal] = useState(false);
+    <div {...getRootProps()} className="border-dashed border-2 border-indigo-600">
+      <FileIcon></FileIcon>
+      <input {...getInputProps()} />
+      {
+        isDragActive ?
+          <p>Drop the files here ...</p> :
+          <p>Drag n drop some files here, or click to select files</p>
+      }
+      {activeFiles?.length}
+    </div>
+    </>
 
-  const UploaderModalCallback = useCallback(() => {
-    return (
-      <UploaderModal
-        showUploaderModal={showUploaderModal}
-        setShowUploaderModal={setShowUploaderModal}
-      />
-    );
-  }, [showUploaderModal, setShowUploaderModal]);
 
-  return useMemo(
-    () => ({ setShowUploaderModal, UploaderModal: UploaderModalCallback }),
-    [setShowUploaderModal, UploaderModalCallback],
-  );
+  )
 }

@@ -22,7 +22,7 @@ const DemoModal = ({
         <div className="flex flex-col items-center justify-center space-y-3 bg-white px-4 py-6 pt-8 text-center md:px-16">
           <a href={APP_DOMAIN_URL}>
             <Image
-              src="/logo.png"
+              src="/logo.svg"
               alt="Route Editor"
               className="h-10 w-10 rounded-full"
               width={20}
