@@ -1,5 +1,5 @@
 // https://developer.garmin.com/fit/example-projects/javascript/
-import { Decoder, Stream, Profile, Utils } from '@garmin-fit/sdk';
+import { Decoder, Stream } from '@garmin-fit/sdk';
 
 export async function decoderFitFile(file: Blob) {
   const buffer = Buffer.from(await file.arrayBuffer());
