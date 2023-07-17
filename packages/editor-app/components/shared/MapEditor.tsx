@@ -65,7 +65,7 @@ export default function MapEditor({ routes }: MapEditorProps) {
 
         map.addControl(draw);
 
-        const [editId] = draw.add(initialRoute);
+        const [editId] = draw.add(initialRoute as unknown as GeoJSON.FeatureCollection<GeoJSON.Geometry>);
 
         // store the matched paths we get from the service in a mapbox source
         map.addSource("rendered-path-source", {
@@ -84,7 +84,8 @@ export default function MapEditor({ routes }: MapEditorProps) {
         });
 
         // save the last displayed coords so we can tell what changes
-        let lastLineCoords = draw.get(editId).geometry.coordinates;
+        // @ts-ignore
+        let lastLineCoords = draw.get(editId)?.geometry?.coordinates;
 
         // keep track of all matched segments between lines
         // stored by the index of the first point. if i+1 or i+2 changes, we need to
@@ -95,7 +96,7 @@ export default function MapEditor({ routes }: MapEditorProps) {
         let lineMatchLegs = new Array(lastLineCoords.length);
 
         // get and save a match segment from the service
-        async function updateSegment(i, coords, precision) {
+        async function updateSegment(i: number, coords: { [x: string]: any; }, precision: number) {
           const queryCoords = [coords[i], coords[i + 1]]
             .map(coord => coord.join(","))
             .join(";");
@@ -116,11 +117,12 @@ export default function MapEditor({ routes }: MapEditorProps) {
         // push saved segments to the mapbox source
         function updateRenderedPath() {
           // maybe? improve rendering performance by update/render each segment individually
+          // @ts-ignore
           map.getSource("rendered-path-source").setData({
             type: "FeatureCollection",
             features: [].concat(
               ...lineMatchLegs.filter(l => l).map(matches =>
-                matches.map(match => ({
+                matches.map((match: { geometry: any; }) => ({
                   type: "Feature",
                   properties: {},
                   geometry: match.geometry
@@ -131,10 +133,10 @@ export default function MapEditor({ routes }: MapEditorProps) {
         }
 
         // full reset, used on init and when we don't know what to do
-        async function resetSegments(coords) {
+        async function resetSegments(coords: any[]) {
           lineMatchLegs = new Array(coords.length);
           await Promise.all(
-            coords.slice(0, -1).map((_, i) => updateSegment(i, coords, 30))
+            coords.slice(0, -1).map((_: any, i: any) => updateSegment(i, coords, 30))
           );
           updateRenderedPath();
         }
@@ -151,7 +153,7 @@ export default function MapEditor({ routes }: MapEditorProps) {
             // Diff against the last version of the line and only fetch segments for
             // the point + next and previous coordinates
             const diffIndex = lastLineCoords.findIndex(
-              (coord, i) => !pointsEqual(newCoords[i], coord)
+              (coord: [number, number], i: string | number) => !pointsEqual(newCoords[i], coord)
             );
             if (diffIndex < 0) {
               // just in case
@@ -215,7 +217,7 @@ export default function MapEditor({ routes }: MapEditorProps) {
       console.log(latitude, longitude)
       initMap(latitude, longitude)
     }, function onError() {
-      initMap()
+      initMap(0, 0)
     });
   }, [])
   console.log(routes)
