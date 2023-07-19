@@ -6,7 +6,7 @@ import FileList from '@/components/shared/FileList'
 import MapEditor, { type Route } from '@/components/shared/MapEditor';
 import { decoderFitFile } from '@/lib/fit';
 
-export default async function Edit() {
+export default function Edit() {
   const [routes, setRoutes] = useState<Route[]>([])
   async function decodeHandler(files: File[]) {
     for (let index = 0; index < files.length; index++) {
