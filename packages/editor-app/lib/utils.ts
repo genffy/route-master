@@ -1,10 +1,10 @@
 import ms from "ms";
+import { LS_TRACK_ROUTE_EDITOR___KEY } from "./constants";
 
 export const timeAgo = (timestamp: Date, timeOnly?: boolean): string => {
   if (!timestamp) return "never";
-  return `${ms(Date.now() - new Date(timestamp).getTime())}${
-    timeOnly ? "" : " ago"
-  }`;
+  return `${ms(Date.now() - new Date(timestamp).getTime())}${timeOnly ? "" : " ago"
+    }`;
 };
 
 export async function fetcher<JSON = any>(
@@ -61,3 +61,25 @@ export const truncate = (str: string, length: number) => {
   if (!str || str.length <= length) return str;
   return `${str.slice(0, length)}...`;
 };
+
+const persistentFiles = new Map<string, File[]>()
+export class PresistFileData {
+  private key = LS_TRACK_ROUTE_EDITOR___KEY
+  constructor() {
+    // default return value
+    if (!persistentFiles.has(this.key)) {
+      persistentFiles.set(this.key, [])
+    }
+  }
+  saveData(data: File[]) {
+    let files = persistentFiles.get(this.key) || []
+    files = files.concat(data)
+    persistentFiles.set(this.key, files)
+  }
+  getData(): File[] {
+    return persistentFiles.get(this.key) || []
+  }
+  clear() {
+    persistentFiles.set(this.key, [])
+  }
+}

@@ -2,22 +2,27 @@
 
 import React, { useState } from 'react';
 import Uploader from './uploader';
+import { PresistFileData } from '@/lib/utils';
 
 export type FileListProps = {
-  files?: File[];
   onConfirm?: (files: File[]) => void;
+  onClear?: () => void;
 }
 
-export default function FileList({ files, onConfirm }: FileListProps) {
+const filesData = new PresistFileData()
+export default function FileList({ onConfirm, onClear }: FileListProps) {
   // store files in state
   // init file from list
-  const [activeFiles, setActiveFiles] = useState<File[]>(files ?? [])
+  const [activeFiles, setActiveFiles] = useState<File[]>(filesData.getData())
   function chooseFileHandler(files: File[]) {
-    setActiveFiles([...activeFiles, ...files]);
+    filesData.saveData(files)
+    setActiveFiles(filesData.getData());
   }
 
   function clearHandler() {
-
+    filesData.clear()
+    setActiveFiles(filesData.getData());
+    onClear?.();
   }
 
   function renderHandler() {
@@ -38,7 +43,7 @@ export default function FileList({ files, onConfirm }: FileListProps) {
               {activeFiles.map((tag, idx) => (
                 <div className="flex items-center" key={idx}>
                   <input type="checkbox" name={tag.name} value={tag.name} className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600' />
-                  <label htmlFor={tag.name} className='ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"'>
+                  <label htmlFor={tag.name} className='ml-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
                     {tag.name}
                   </label>
                 </div>

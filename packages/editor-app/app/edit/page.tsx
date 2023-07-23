@@ -13,6 +13,7 @@ export default function Edit() {
   // fit
   // gpx
   async function decodeHandler(files: File[]) {
+    // setFileList(files)
     for (let index = 0; index < files.length; index++) {
       const file = files[index];
       const messages = await decoderFitFile(file);
@@ -39,10 +40,12 @@ export default function Edit() {
     // setRoutes([])
     console.log(routes)
   }
-
+  function clearHandler() {
+    setRoutes([])
+  }
   return (
     <div className='min-h-screen w-full'>
-      <FileList onConfirm={decodeHandler}></FileList>
+      <FileList onConfirm={decodeHandler} onClear={clearHandler}></FileList>
       <MapEditor routes={routes}></MapEditor>
     </div>
   );
