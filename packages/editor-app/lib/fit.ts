@@ -1,6 +1,6 @@
 // https://developer.garmin.com/fit/example-projects/javascript/
 import { Decoder, Stream } from '@garmin-fit/sdk';
-
+// TODO add FIT decode data types
 export async function decoderFitFile(file: Blob) {
   const buffer = Buffer.from(await file.arrayBuffer());
   const stream = Stream.fromBuffer(buffer);

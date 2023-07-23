@@ -8,9 +8,13 @@ import mapboxgl from 'mapbox-gl';
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { MAPBOX_ACCESS_TOKEN } from '@/lib/constants';
 
-import routes from '@/mock/routes.json'
-
-export type Route = {}
+type RouteSingle = {
+  "alt": string;
+  "latitude": number;
+  "longitute": number;
+}
+// TODO multiple routes
+export type Route = RouteSingle
 
 type MapEditorProps = {
   routes: Route[];
@@ -21,25 +25,24 @@ const token = mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 function pointsEqual([aLat, aLng]: [number, number], [bLat, bLng]: [number, number]) {
   return aLat === bLat && aLng === bLng;
 }
-// demo from https://github.com/apexskier/mapbox-route-editor
-// fetched from server
-// const initialRoute = await (await fetch(url, optoins)).json()
-const initialRoute = {
-  coordinates: [
-    ...routes.map(({ latitude, longitute }) => [longitute, latitude])
-  ],
-  type: "LineString"
-};
-
-const bounds = initialRoute.coordinates.reduce((bounds, coord) => {
-  // @ts-ignore
-  return bounds.extend(coord);
-}, new mapboxgl.LngLatBounds());
-
 
 export default function MapEditor({ routes }: MapEditorProps) {
   const mapRef = useRef(null);
+
   useEffect(() => {
+    // demo from https://github.com/apexskier/mapbox-route-editor
+    const initialRoute = {
+      coordinates: [
+        ...routes.map(({ latitude, longitute }) => [longitute, latitude])
+      ],
+      type: "LineString"
+    };
+
+    const bounds = initialRoute.coordinates.reduce((bounds, coord) => {
+      // @ts-ignore
+      return bounds.extend(coord);
+    }, new mapboxgl.LngLatBounds());
+
     function initMap(lat: number, lng: number) {
       if (!mapRef.current) {
         return
@@ -202,10 +205,9 @@ export default function MapEditor({ routes }: MapEditorProps) {
           from: initialRoute.coordinates[initialRoute.coordinates.length - 1]
         });
       });
-
-
     }
     // initMap()
+    // TODO: use server api to get default deo by ip
     if (!navigator.geolocation) {
       console.error(`Your browser doesn't support Geolocation`);
     }
@@ -219,7 +221,7 @@ export default function MapEditor({ routes }: MapEditorProps) {
     }, function onError() {
       initMap(0, 0)
     });
-  }, [])
+  }, [routes])
   console.log(routes)
   return (
     <>
