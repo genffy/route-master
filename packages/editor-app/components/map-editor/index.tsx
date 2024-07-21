@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
-import "./MapEditor.style.css";
+import "./index.style.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import mapboxgl from 'mapbox-gl';
@@ -13,8 +13,8 @@ type RouteSingle = {
   "latitude": number;
   "longitute": number;
 }
-// TODO multiple routes
-export type Route = RouteSingle
+
+export type Route = RouteSingle[]
 
 type MapEditorProps = {
   routes: Route[];
@@ -27,10 +27,11 @@ function pointsEqual([aLat, aLng]: [number, number], [bLat, bLng]: [number, numb
 }
 
 export default function MapEditor({ routes }: MapEditorProps) {
-  const mapRef = useRef(null);
+  const mapRef = useRef([]);
+  // render multi routes
+  // how to merge ?
 
-  useEffect(() => {
-    // demo from https://github.com/apexskier/mapbox-route-editor
+  function addDraw(draw: MapboxDraw, routes: Route) {
     const initialRoute = {
       coordinates: [
         ...routes.map(({ latitude, longitute }) => [longitute, latitude])
@@ -38,11 +39,22 @@ export default function MapEditor({ routes }: MapEditorProps) {
       type: "LineString"
     };
 
-    const bounds = initialRoute.coordinates.reduce((bounds, coord) => {
-      // @ts-ignore
-      return bounds.extend(coord);
-    }, new mapboxgl.LngLatBounds());
+    const [editId] = draw.add(initialRoute as unknown as GeoJSON.FeatureCollection<GeoJSON.Geometry>);
+    return editId
+  }
 
+  useEffect(() => {
+    // demo from https://github.com/apexskier/mapbox-route-editor
+    // geojson
+
+
+    // TODO
+    // const bounds = initialRoute.coordinates.reduce((bounds, coord) => {
+    //   // @ts-ignore
+    //   return bounds.extend(coord);
+    // }, new mapboxgl.LngLatBounds());
+
+    // init map
     function initMap(lat: number, lng: number) {
       if (!mapRef.current) {
         return
@@ -60,33 +72,95 @@ export default function MapEditor({ routes }: MapEditorProps) {
           line_string: true
         },
         displayControlsDefault: false,
-        defaultMode: "draw_line_string"
+        defaultMode: "draw_line_string",
+        styles: [
+          // Set the line style for the user-input coordinates
+          {
+            'id': 'gl-draw-line',
+            'type': 'line',
+            'filter': [
+              'all',
+              ['==', '$type', 'LineString'],
+              ['!=', 'mode', 'static']
+            ],
+            'layout': {
+              'line-cap': 'round',
+              'line-join': 'round'
+            },
+            'paint': {
+              'line-color': '#438EE4',
+              'line-dasharray': [0.2, 2],
+              'line-width': 2,
+              'line-opacity': 0.7
+            }
+          },
+          // Style the vertex point halos
+          {
+            'id': 'gl-draw-polygon-and-line-vertex-halo-active',
+            'type': 'circle',
+            'filter': [
+              'all',
+              ['==', 'meta', 'vertex'],
+              ['==', '$type', 'Point'],
+              ['!=', 'mode', 'static']
+            ],
+            'paint': {
+              'circle-radius': 12,
+              'circle-color': '#FFF'
+            }
+          },
+          // Style the vertex points
+          {
+            'id': 'gl-draw-polygon-and-line-vertex-active',
+            'type': 'circle',
+            'filter': [
+              'all',
+              ['==', 'meta', 'vertex'],
+              ['==', '$type', 'Point'],
+              ['!=', 'mode', 'static']
+            ],
+            'paint': {
+              'circle-radius': 8,
+              'circle-color': '#438EE4'
+            }
+          }
+        ]
       });
 
       map.on("load", async () => {
-        map.fitBounds(bounds, { padding: 20 });
+        // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#fitbounds
+        // TODO: fitBounds with multiple routes
+        // map.fitBounds(bounds, { padding: 20 });
 
+        // add the draw tool to the map
         map.addControl(draw);
 
-        const [editId] = draw.add(initialRoute as unknown as GeoJSON.FeatureCollection<GeoJSON.Geometry>);
+        // choose one and
+        const editIds: string[] = []
+        routes.forEach((route) => {
+          const id = addDraw(draw, route)
+          editIds.push(id)
+          console.log(id)
+        })
 
         // store the matched paths we get from the service in a mapbox source
-        map.addSource("rendered-path-source", {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: []
-          }
-        });
+        // map.addSource("rendered-path-source", {
+        //   type: "geojson",
+        //   data: {
+        //     type: "FeatureCollection",
+        //     features: []
+        //   }
+        // });
 
         // display the matched paths from the service
-        map.addLayer({
-          id: "rendered-path-layer",
-          type: "line",
-          source: "rendered-path-source"
-        });
+        // map.addLayer({
+        //   id: "rendered-path-layer",
+        //   type: "line",
+        //   source: "rendered-path-source"
+        // });
 
         // save the last displayed coords so we can tell what changes
+        const [editId, ..._restIds] = editIds
         // @ts-ignore
         let lastLineCoords = draw.get(editId)?.geometry?.coordinates;
 
@@ -200,10 +274,10 @@ export default function MapEditor({ routes }: MapEditorProps) {
           // handle errors
         });
 
-        draw.changeMode("draw_line_string", {
-          featureId: editId,
-          from: initialRoute.coordinates[initialRoute.coordinates.length - 1]
-        });
+        // draw.changeMode("draw_line_string", {
+        //   featureId: editId,
+        //   from: initialRoute.coordinates[initialRoute.coordinates.length - 1]
+        // });
       });
     }
     // initMap()
@@ -222,7 +296,6 @@ export default function MapEditor({ routes }: MapEditorProps) {
       initMap(0, 0)
     });
   }, [routes])
-  console.log(routes)
   return (
     <>
       <div id="map-content" ref={mapRef}></div>

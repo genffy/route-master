@@ -6,6 +6,7 @@ import FileList from '@/components/shared/FileList'
 import MapEditor, { type Route } from '@/components/shared/MapEditor';
 import { decoderFitFile } from '@/lib/fit';
 import mockRoutes from '@/mock/routes.json'
+import mockRouteSingle from '@/mock/routes-single.json'
 
 export default function Edit() {
   const [routes, setRoutes] = useState<Route[]>(mockRoutes)
@@ -23,7 +24,6 @@ export default function Edit() {
         if (item.positionLat && item.positionLong) {
           return true
         }
-        console.log(item)
         return false
       }).map((item: any) => {
         const { positionLat, positionLong, altitude } = item
