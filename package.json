@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "initenv": "source $HOME/.nvm/nvm.sh; nvm use && pnpm i -g pnpm@9.4.0",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "find . -name 'node_modules' -exec rm -rf '{}' \\;",
     "app:dev": "pnpm run -C packages/editor-app dev"
@@ -19,5 +18,8 @@
   "packageManager": "pnpm@9.4.0",
   "dependencies": {
     "@garmin/fitsdk": "^21.141.0"
+  },
+  "volta": {
+    "node": "18.20.3"
   }
 }

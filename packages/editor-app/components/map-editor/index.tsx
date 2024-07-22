@@ -17,7 +17,8 @@ type RouteSingle = {
 export type Route = RouteSingle[]
 
 type MapEditorProps = {
-  routes: Route[];
+  routes: any[];
+  geoJSON: any
 }
 
 const token = mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -26,8 +27,8 @@ function pointsEqual([aLat, aLng]: [number, number], [bLat, bLng]: [number, numb
   return aLat === bLat && aLng === bLng;
 }
 
-export default function MapEditor({ routes }: MapEditorProps) {
-  const mapRef = useRef([]);
+export default function MapEditor({ routes, geoJSON }: MapEditorProps) {
+  const mapRef = useRef(null);
   // render multi routes
   // how to merge ?
 
@@ -144,25 +145,22 @@ export default function MapEditor({ routes }: MapEditorProps) {
         })
 
         // store the matched paths we get from the service in a mapbox source
-        // map.addSource("rendered-path-source", {
-        //   type: "geojson",
-        //   data: {
-        //     type: "FeatureCollection",
-        //     features: []
-        //   }
-        // });
+        map.addSource("rendered-path-source", {
+          type: "geojson",
+          data: geoJSON,
+        });
 
         // display the matched paths from the service
-        // map.addLayer({
-        //   id: "rendered-path-layer",
-        //   type: "line",
-        //   source: "rendered-path-source"
-        // });
+        map.addLayer({
+          id: "rendered-path-layer",
+          type: "line",
+          source: "rendered-path-source"
+        });
 
         // save the last displayed coords so we can tell what changes
         const [editId, ..._restIds] = editIds
         // @ts-ignore
-        let lastLineCoords = draw.get(editId)?.geometry?.coordinates;
+        let lastLineCoords = draw.get(editId)?.geometry?.coordinates || [];
 
         // keep track of all matched segments between lines
         // stored by the index of the first point. if i+1 or i+2 changes, we need to

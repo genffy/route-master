@@ -5,9 +5,10 @@ import Uploader from './uploader';
 import { PresistFileData } from '@/lib/utils';
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { Badge, IconButton } from '@radix-ui/themes';
+import { decoderFitFile } from '@/lib/fit';
 
 export type FileListProps = {
-  onLoaded?: (files: File[]) => void;
+  onLoaded?: (files: File[], actives: any[]) => void;
   onClear?: () => void;
 }
 
@@ -18,16 +19,15 @@ export default function FileList({ onLoaded, onClear }: FileListProps) {
   // init file from list
   const [activeFiles, setActiveFiles] = useState<File[]>([])
   const [files, setFiles] = useState<File[]>(filesData.getData())
-  function chooseFileHandler(files: File[]) {
+  async function chooseFileHandler(files: File[]) {
+    for (const file of files) {
+      const content = await decoderFitFile(file)
+      console.log(content)
+      setActiveFiles([...activeFiles, content]);
+    }
     filesData.saveData(files)
     setFiles(filesData.getData());
-    onLoaded?.(files);
-  }
-
-  function clearHandler() {
-    filesData.clear()
-    setFiles(filesData.getData());
-    onClear?.();
+    onLoaded?.(files, activeFiles);
   }
 
   function removeHandler(file: File) {
@@ -35,17 +35,6 @@ export default function FileList({ onLoaded, onClear }: FileListProps) {
     setFiles(filesData.getData());
   }
 
-  function renderHandler() {
-    onLoaded?.(activeFiles);
-  }
-  function changeHandler(evt: ChangeEvent, file: File) {
-    const target = evt.target as HTMLInputElement;
-    if (target.checked) {
-      setActiveFiles([...activeFiles, file]);
-    } else {
-      setActiveFiles(activeFiles.filter(f => f.name !== file.name));
-    }
-  }
   return <div className='absolute top-4 left-4 z-20 w-80'>
     {/* title */}
     <div className="w-full h-[calc(100%-1rem)]">
@@ -58,19 +47,13 @@ export default function FileList({ onLoaded, onClear }: FileListProps) {
           {
             files && files.length > 0 ? <div className='flex flex-col p-4 mb-4'>
               {files.map((file, idx) => (
-                <div className="flex items-center" key={idx}>
+                <div className="flex items-between" key={idx}>
                   <Badge color="cyan">
                     {file.name}
-                    <IconButton type="button" onClick={() => removeHandler(file)} >
+                    <IconButton size={'1'} type="button" onClick={() => removeHandler(file)} >
                       <Cross1Icon></Cross1Icon>
                     </IconButton>
                   </Badge>
-                  {/* <label htmlFor={file.name} className='ml-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
-                    {file.name}
-                  </label>
-                  <IconButton type="button" onClick={() => removeHandler(file)} >
-                    <Cross1Icon></Cross1Icon>
-                  </IconButton> */}
                 </div>
               ))}
             </div> : null
