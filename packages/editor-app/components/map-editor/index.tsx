@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import "./index.style.css";
-import 'mapbox-gl/dist/mapbox-gl.css';
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import mapboxgl from 'mapbox-gl';
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { MAPBOX_ACCESS_TOKEN } from '@/lib/constants';
+
+import "./index.style.css";
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 type RouteSingle = {
   "alt": string;
