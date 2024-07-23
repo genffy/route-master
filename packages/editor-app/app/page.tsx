@@ -3,18 +3,17 @@
 import MapEditor from "@/components/map-editor";
 import FileList from "@/components/file-list";
 import { useState } from "react";
-import mockRouteSingle from '@/mock/routes-single.json'
 
 export default function Index() {
-  const [routes, setRoutes] = useState([]);
-  const [activeFiles, setActiveFiles] = useState<any[]>([]);
-  function onLoadHandler(files: File[], actives: any[]) {
-    setActiveFiles(actives);
+  const [routes, setRoutes] = useState<any>([]);
+  function onLoadHandler(geojson: any) {
+    console.log('onLoadHandler', geojson);
+    setRoutes(geojson);
   }
   return (
     <main className="min-h-screen w-full">
       <FileList onLoaded={onLoadHandler}></FileList>
-      <MapEditor routes={routes} geoJSON={mockRouteSingle}></MapEditor>
+      <MapEditor routes={routes}></MapEditor>
     </main>
   );
 }

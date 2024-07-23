@@ -8,31 +8,33 @@ import { Badge, IconButton } from '@radix-ui/themes';
 import { decoderFitFile } from '@/lib/fit';
 
 export type FileListProps = {
-  onLoaded?: (files: File[], actives: any[]) => void;
+  onLoaded?: (actives: any[]) => void;
   onClear?: () => void;
 }
 
 const filesData = new PresistFileData()
 
 export default function FileList({ onLoaded, onClear }: FileListProps) {
-  // store files in state
-  // init file from list
-  const [activeFiles, setActiveFiles] = useState<File[]>([])
   const [files, setFiles] = useState<File[]>(filesData.getData())
-  async function chooseFileHandler(files: File[]) {
-    for (const file of files) {
+
+  async function fileChangeHandler() {
+    const actives: any[] = []
+    for (const file of filesData.getData()) {
       const content = await decoderFitFile(file)
-      console.log(content)
-      setActiveFiles([...activeFiles, content]);
+      actives.push(content)
     }
+    onLoaded && onLoaded(actives);
+  }
+  async function chooseFileHandler(files: File[]) {
     filesData.saveData(files)
     setFiles(filesData.getData());
-    onLoaded?.(files, activeFiles);
+    fileChangeHandler()
   }
 
   function removeHandler(file: File) {
     filesData.removeData(file.name)
     setFiles(filesData.getData());
+    fileChangeHandler();
   }
 
   return <div className='absolute top-4 left-4 z-20 w-80'>

@@ -1,7 +1,5 @@
 import "./globals.css";
 import '@radix-ui/themes/styles.css';
-import cx from "classnames";
-import { sfPro, inter } from "./fonts";
 import { APP_DOMAIN_URL } from "@/lib/constants";
 import { Theme } from '@radix-ui/themes';
 
@@ -20,7 +18,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cx(sfPro.variable, inter.variable)}>
+      <body>
         <Theme>
           {children}
         </Theme>

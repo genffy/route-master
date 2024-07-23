@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import "./index.style.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
@@ -17,8 +17,7 @@ type RouteSingle = {
 export type Route = RouteSingle[]
 
 type MapEditorProps = {
-  routes: any[];
-  geoJSON: any
+  routes: any;
 }
 
 const token = mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -27,8 +26,10 @@ function pointsEqual([aLat, aLng]: [number, number], [bLat, bLng]: [number, numb
   return aLat === bLat && aLng === bLng;
 }
 
-export default function MapEditor({ routes, geoJSON }: MapEditorProps) {
+export default function MapEditor({ routes }: MapEditorProps) {
   const mapRef = useRef(null);
+  const mapInstance = useRef<mapboxgl.Map>();
+  const [sources, setSources] = useState<string[]>([]);
   // render multi routes
   // how to merge ?
 
@@ -61,11 +62,11 @@ export default function MapEditor({ routes, geoJSON }: MapEditorProps) {
         return
       }
 
-      const map = new mapboxgl.Map({
+      const map = mapInstance.current = new mapboxgl.Map({
         container: 'map-content', // container ID
         style: 'mapbox://styles/mapbox/streets-v12', // style URL
         center: [lng, lat], // starting position [lng, lat]
-        zoom: 9, // starting zoom
+        zoom: 16, // starting zoom
       });
 
       const draw = new MapboxDraw({
@@ -138,24 +139,13 @@ export default function MapEditor({ routes, geoJSON }: MapEditorProps) {
 
         // choose one and
         const editIds: string[] = []
-        routes.forEach((route) => {
-          const id = addDraw(draw, route)
-          editIds.push(id)
-          console.log(id)
-        })
+        // routes.forEach((route) => {
+        //   const id = addDraw(draw, route)
+        //   editIds.push(id)
+        //   console.log(id)
+        // })
 
-        // store the matched paths we get from the service in a mapbox source
-        map.addSource("rendered-path-source", {
-          type: "geojson",
-          data: geoJSON,
-        });
-
-        // display the matched paths from the service
-        map.addLayer({
-          id: "rendered-path-layer",
-          type: "line",
-          source: "rendered-path-source"
-        });
+        addRoutes();
 
         // save the last displayed coords so we can tell what changes
         const [editId, ..._restIds] = editIds
@@ -278,22 +268,73 @@ export default function MapEditor({ routes, geoJSON }: MapEditorProps) {
         // });
       });
     }
-    // initMap()
-    // TODO: use server api to get default deo by ip
-    if (!navigator.geolocation) {
-      console.error(`Your browser doesn't support Geolocation`);
+
+    function addRoutes() {
+      const map = mapInstance.current;
+      if (!map) return;
+      // add or update
+      const newIds = routes.map((item: any) => `rendered-path-source-${item.properties.id}`)
+
+      sources.forEach((id: any) => {
+        if (!newIds.includes(id)) {
+          if (map.getSource(id)) {
+            map.removeLayer(id);
+            map.removeSource(id);
+          }
+        }
+      });
+      setSources(newIds);
+      routes.forEach((route: any, idx: number) => {
+        const { properties } = route;
+        // const id = addDraw(draw, route)
+        // editIds.push(id)
+        // console.log(id)
+        const id = `rendered-path-source-${properties.id}`;
+        const source = map.getSource(id);
+        if (source) {
+          source.setData(route)
+        } else {
+          map.addSource(id, {
+            type: "geojson",
+            data: route,
+          });
+          // display the matched paths from the service
+          map.addLayer({
+            id: id,
+            type: "line",
+            source: id,
+            paint: {
+              'line-color': 'yellow',
+              'line-width': 1
+            }
+          });
+        }
+      })
+      // remove
+      // @ts-ignore
+      console.log(map && map.style && map.style._sourceCaches)
+
     }
-    navigator.geolocation.getCurrentPosition(function onSuccess(position) {
-      const {
-        latitude,
-        longitude
-      } = position.coords;
-      console.log(latitude, longitude)
-      initMap(latitude, longitude)
-    }, function onError() {
-      initMap(0, 0)
-    });
-  }, [routes])
+    if (mapInstance.current) {
+      addRoutes();
+    } else {
+      initMap(31.266184495845565, 121.48002838061575);
+    }
+    // TODO: use server api to get default deo by ip
+    // if (!navigator.geolocation) {
+    //   console.error(`Your browser doesn't support Geolocation`);
+    // }
+    // navigator.geolocation.getCurrentPosition(function onSuccess(position) {
+    //   const {
+    //     latitude,
+    //     longitude
+    //   } = position.coords;
+    //   console.log(latitude, longitude)
+    //   initMap(latitude, longitude)
+    // }, function onError() {
+    //   initMap(0, 0)
+    // });
+  }, [routes]);
   return (
     <>
       <div id="map-content" ref={mapRef}></div>
