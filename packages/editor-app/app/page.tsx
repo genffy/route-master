@@ -7,7 +7,6 @@ import { useState } from "react";
 export default function Index() {
   const [routes, setRoutes] = useState<any>([]);
   function onLoadHandler(geojson: any) {
-    console.log('onLoadHandler', geojson);
     setRoutes(geojson);
   }
   return (

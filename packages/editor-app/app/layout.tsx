@@ -8,7 +8,7 @@ export const metadata = {
   description:
     "Editor app is an application for editing and managing track route",
   metadataBase: APP_DOMAIN_URL,
-  themeColor: "#FFF",
+  // themeColor: "",
 };
 
 export default async function RootLayout({

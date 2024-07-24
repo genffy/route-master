@@ -23,6 +23,13 @@ export default function Uploader({
     onChange && onChange(acceptedFiles);
   }, [])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      'application/fit': ['.fit'],
+      'application/gpx': ['.gpx'],
+      // 'application/vnd.google-earth.kml+xml': ['.kml'],
+      // 'application/vnd.google-earth.kmz': ['.kmz'],
+      // 'application/vnd.garmin.tcx+xml': ['.tcx'],
+    },
     onDrop,
   })
   return (
@@ -33,7 +40,7 @@ export default function Uploader({
           <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
           <p className="text-xs text-gray-500 dark:text-gray-400">FIT, GPX</p>
         </div>
-        <input id="dropzone-file" name='dropzone-file' {...getInputProps()} accept='.fit, .gpx' />
+        <input id="dropzone-file" name='dropzone-file' {...getInputProps()} />
       </label>
     </div>
   )

@@ -1,11 +1,12 @@
 "use client";
 
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import Uploader from './uploader';
 import { PresistFileData } from '@/lib/utils';
 import { Cross1Icon } from '@radix-ui/react-icons';
-import { Badge, Flex, IconButton, RadioCards, Text } from '@radix-ui/themes';
-import { decoderFitFile } from '@/lib/fit';
+import { Flex, IconButton, Separator, Text } from '@radix-ui/themes';
+import { decodeFile } from '@/lib/convert';
+import type { FeatureCollection, LineString } from 'geojson';
 
 export type FileListProps = {
   onLoaded?: (actives: any[]) => void;
@@ -14,13 +15,29 @@ export type FileListProps = {
 
 const filesData = new PresistFileData()
 
-export default function FileList({ onLoaded, onClear }: FileListProps) {
-  const [files, setFiles] = useState<File[]>(filesData.getData())
+interface ExtendFeatureCollection extends FeatureCollection {
+  properties?: { id: string, name: string, active: boolean }
+}
 
-  async function fileChangeHandler() {
+export default function FileList({ onLoaded }: FileListProps) {
+  const [files, setFiles] = useState<File[]>(filesData.getData())
+  const [active, setActive] = useState<File | null>(filesData.getData()[0])
+
+  async function fileChangeHandler(idx: number = 0) {
+
     const actives: any[] = []
     for (const file of filesData.getData()) {
-      const content = await decoderFitFile(file)
+      const content: ExtendFeatureCollection = await decodeFile(file)
+      content.properties = {
+        id: btoa(file.name),
+        name: file.name,
+        active: false
+      }
+      if (idx === filesData.getData().indexOf(file)) {
+        content.properties.active = true
+      } else {
+        content.properties.active = false
+      }
       actives.push(content)
     }
     onLoaded && onLoaded(actives);
@@ -37,6 +54,11 @@ export default function FileList({ onLoaded, onClear }: FileListProps) {
     fileChangeHandler();
   }
 
+  function onSelectHandler(file: File, idx: number) {
+    setActive(file)
+    fileChangeHandler(idx)
+  }
+
   return <div className='absolute top-4 left-4 z-20 w-80'>
     <div className="w-full h-[calc(100%-1rem)]">
       <div className="relative w-full max-w-2xl bg-white rounded-lg shadow dark:bg-gray-700">
@@ -45,21 +67,21 @@ export default function FileList({ onLoaded, onClear }: FileListProps) {
         </div>
         <div className='container w-full max-h-96 overflow-auto p-4'>
           <Uploader onChange={chooseFileHandler}></Uploader>
-          <hr className='my-4' />
-          <RadioCards.Root defaultValue={files[0]?.name}>
-            {
-              files.map((file, idx) => (
-                <RadioCards.Item value={file.name} key={idx}>
-                  <Flex direction="row" align="center" justify="between" width="100%">
+          {files.length > 0 && <>
+            <Separator className='my-4' color="indigo" size="4" />
+            <Flex direction="column" gap="4">
+              {
+                files.map((file, idx) => (
+                  <Flex p="2" direction="row" align="center" justify="between" width="100%" className={`bg-sky-200 hover:bg-sky-300 cursor-pointer rounded-md text-slate-500 ${active?.name === file.name ? 'bg-sky-300' : ''}`} key={idx} onClick={() => onSelectHandler(file, idx)}>
                     <Text weight="bold">{file.name}</Text>
-                    <IconButton size={'1'} type="button" onClick={() => removeHandler(file)} >
+                    <IconButton size={'1'} type="button" className='cursor-pointer' onClick={() => removeHandler(file)} >
                       <Cross1Icon></Cross1Icon>
                     </IconButton>
                   </Flex>
-                </RadioCards.Item>
-              ))
-            }
-          </RadioCards.Root>
+                ))
+              }
+            </Flex>
+          </>}
         </div>
       </div>
     </div>
