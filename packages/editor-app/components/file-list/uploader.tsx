@@ -15,6 +15,8 @@ export default function Uploader({
 }: UploaderProps) {
   const [activeFiles, setActiveFiles] = useState<File[]>([]);
   const onDrop = useCallback((acceptedFiles: File[]) => {
+    // prevent select repeat
+    acceptedFiles = acceptedFiles.filter((file) => !activeFiles.some((activeFile) => activeFile.name === file.name));
     if (activeFiles) {
       setActiveFiles([...activeFiles, ...acceptedFiles]);
     } else {
