@@ -6,7 +6,7 @@ import { PresistFileData } from '@/lib/utils';
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { Flex, IconButton, Separator, Text } from '@radix-ui/themes';
 import { decodeFile } from '@/lib/convert';
-import type { FeatureCollection, LineString } from 'geojson';
+import type { ExtendFeatureCollection } from '@/components/map-editor/types';
 
 export type FileListProps = {
   onLoaded?: (actives: any[]) => void;
@@ -14,10 +14,6 @@ export type FileListProps = {
 }
 
 const filesData = new PresistFileData()
-
-interface ExtendFeatureCollection extends FeatureCollection {
-  properties?: { id: string, name: string, active: boolean }
-}
 
 export default function FileList({ onLoaded }: FileListProps) {
   const [files, setFiles] = useState<File[]>(filesData.getData())
