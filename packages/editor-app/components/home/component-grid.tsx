@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDemoModal } from "@/components/home/demo-modal";
 import Popover from "@/components/shared/popover";
 import Tooltip from "@/components/shared/tooltip";
+import { ArrowDownIcon } from "@radix-ui/react-icons";
 
 
 export default function ComponentGrid() {
@@ -42,7 +43,7 @@ export default function ComponentGrid() {
           className="flex w-36 items-center justify-between rounded-md border border-gray-300 px-4 py-2 transition-all duration-75 hover:border-gray-800 focus:outline-none active:bg-gray-100"
         >
           <p className="text-gray-600">Popover</p>
-          <ChevronDown
+          <ArrowDownIcon
             className={`h-4 w-4 text-gray-600 transition-all ${openPopover ? "rotate-180" : ""
               }`}
           />
