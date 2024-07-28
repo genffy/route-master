@@ -1,18 +1,16 @@
 'use client';
 
-import MapEditor from "@/components/map-editor";
-import FileList from "@/components/file-list";
 import { useState } from "react";
+import { Heading } from "@radix-ui/themes";
 
-export default function Index() {
+export default function Art() {
   const [routes, setRoutes] = useState<any>([]);
   function onLoadHandler(geojson: any) {
     setRoutes(geojson);
   }
   return (
     <main className="min-h-screen w-full">
-      <FileList onLoaded={onLoadHandler}></FileList>
-      <MapEditor routes={routes}></MapEditor>
+      <Heading>combine multi runs</Heading>
     </main>
   );
 }

@@ -1,15 +1,14 @@
 import "./globals.css";
-// import { Analytics } from "@vercel/analytics/react";
-import cx from "classnames";
-import { sfPro, inter } from "./fonts";
+import '@radix-ui/themes/styles.css';
 import { APP_DOMAIN_URL } from "@/lib/constants";
+import { Theme } from '@radix-ui/themes';
 
 export const metadata = {
   title: "Route Editor",
   description:
     "Editor app is an application for editing and managing track route",
   metadataBase: APP_DOMAIN_URL,
-  themeColor: "#FFF",
+  // themeColor: "",
 };
 
 export default async function RootLayout({
@@ -19,8 +18,10 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cx(sfPro.variable, inter.variable)}>
-      {children}
+      <body>
+        <Theme>
+          {children}
+        </Theme>
       </body>
     </html>
   );

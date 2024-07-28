@@ -1,5 +1,5 @@
 
-import { decoderFitFile } from '@/lib/fit';
+import { decodeFile } from '@/lib/convert';
 
 export async function POST(request: Request) {
   const file = await request.formData()
@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  const messages = decoderFitFile(fileData);
+  const messages = decodeFile(fileData);
 
   console.log(messages);
   return new Response(JSON.stringify(messages), { status: 200 })

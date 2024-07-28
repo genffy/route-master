@@ -79,6 +79,11 @@ export class PresistFileData {
   getData(): File[] {
     return persistentFiles.get(this.key) || []
   }
+  removeData(name: string) {
+    let files = persistentFiles.get(this.key) || []
+    files = files.filter((file) => name !== file.name)
+    persistentFiles.set(this.key, files)
+  }
   clear() {
     persistentFiles.set(this.key, [])
   }
