@@ -5,7 +5,7 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import "./index.style.css";
 
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { LngLatLike } from 'mapbox-gl';
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { MAPBOX_ACCESS_TOKEN } from '@/lib/constants';
 
@@ -15,7 +15,7 @@ type MapEditorProps = {
   routes: ExtendFeatureCollection[];
 }
 
-const token = mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 function pointsEqual([aLat, aLng]: [number, number], [bLat, bLng]: [number, number]) {
   return aLat === bLat && aLng === bLng;
@@ -26,6 +26,7 @@ export default function MapEditor({ routes }: MapEditorProps) {
   const mapInstance = useRef<mapboxgl.Map>();
   const [sources, setSources] = useState<string[]>([]);
   const [roundedArea, setRoundedArea] = useState();
+  const [center, setCenter] = useState<LngLatLike>([0, 0]);
 
   function getBounds(routes: any) {
     const bounds = routes.features[0].geometry.coordinates.reduce((bounds: any, coord: any) => {
@@ -35,117 +36,47 @@ export default function MapEditor({ routes }: MapEditorProps) {
     return bounds;
   }
 
-  function initDraw() {
-    if (!mapInstance.current) return
-    const map = mapInstance.current;
+  useEffect(() => {
+    if (!mapRef.current) {
+      return
+    }
+    // if (mapInstance.current) {
+    //   return initMap();
+    // }
+    const map = mapInstance.current = new mapboxgl.Map({
+      container: 'map-content', // container ID
+      style: 'mapbox://styles/mapbox/streets-v12', // style URL
+      center, // starting position [lng, lat]
+      zoom: 16, // starting zoom
+    });
+
     const draw = new MapboxDraw({
       displayControlsDefault: false,
       controls: {
         polygon: true,
         trash: true
       },
-      defaultMode: 'draw_polygon'
+      // defaultMode: 'draw_polygon'
+      defaultMode: 'simple_select'
+      // defaultMode: 'draw_line_string'
     });
-    map.addControl(draw, 'top-left');
 
-    map.on('draw.create', updateArea);
-    map.on('draw.delete', updateArea);
-    map.on('draw.update', updateArea);
+    map.on("load", () => {
+      map.addControl(draw, 'top-left');
+      map.on('draw.create', updateArea);
+      map.on('draw.delete', updateArea);
+      map.on('draw.update', updateArea);
 
-    function updateArea(e) {
-      const data = draw.getAll();
-      if (data.features.length > 0) {
-        console.log(data)
-      } else {
-        if (e.type !== 'draw.delete') alert('Click the map to draw a polygon.');
+      function updateArea(e: any) {
+        const data = draw.getAll();
+        if (data.features.length > 0) {
+          console.log(data)
+        } else {
+          if (e.type !== 'draw.delete') alert('Click the map to draw a polygon.');
+        }
       }
-    }
-    // 清空现有的绘制数据
-    // draw.deleteAll();
-
-    // // 添加 GPX 数据到 mapbox-gl-draw
-    // routes.forEach((route: any) => {
-    //   route.features.forEach((feature: any) => {
-    //     draw.add(feature);
-    //   });
-    // })
-  }
-
-  useEffect(() => {
-    // init map
-    function initMap(lat: number, lng: number) {
-      if (!mapRef.current) {
-        return
-      }
-      const map = mapInstance.current = new mapboxgl.Map({
-        container: 'map-content', // container ID
-        // style: 'mapbox://styles/mapbox/streets-v12', // style URL
-        // center: [lng, lat], // starting position [lng, lat]
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [-68.137343, 45.137451],
-        zoom: 16, // starting zoom
-      });
-
-      map.on("load", () => {
-        // addRoutes();
-        map.addSource('maine', {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              // These coordinates outline Maine.
-              coordinates: [
-                [
-                  [-67.13734, 45.13745],
-                  [-66.96466, 44.8097],
-                  [-68.03252, 44.3252],
-                  [-69.06, 43.98],
-                  [-70.11617, 43.68405],
-                  [-70.64573, 43.09008],
-                  [-70.75102, 43.08003],
-                  [-70.79761, 43.21973],
-                  [-70.98176, 43.36789],
-                  [-70.94416, 43.46633],
-                  [-71.08482, 45.30524],
-                  [-70.66002, 45.46022],
-                  [-70.30495, 45.91479],
-                  [-70.00014, 46.69317],
-                  [-69.23708, 47.44777],
-                  [-68.90478, 47.18479],
-                  [-68.2343, 47.35462],
-                  [-67.79035, 47.06624],
-                  [-67.79141, 45.70258],
-                  [-67.13734, 45.13745]
-                ]
-              ]
-            }
-          }
-        });
-
-        map.addLayer({
-          id: 'maine',
-          type: 'fill',
-          source: 'maine',
-          layout: {},
-          paint: {
-            'fill-color': '#0080ff',
-            'fill-opacity': 0.5
-          }
-        });
-
-        map.addLayer({
-          id: 'outline',
-          type: 'line',
-          source: 'maine',
-          layout: {},
-          paint: {
-            'line-color': '#000',
-            'line-width': 3
-          }
-        });
-      });
-    }
+      initMap();
+    });
 
     function addRoutes() {
       const map = mapInstance.current;
@@ -161,13 +92,13 @@ export default function MapEditor({ routes }: MapEditorProps) {
         }
       });
       setSources(newIds);
-      routes.forEach((route: any) => {
-        const { properties } = route;
+      routes.forEach((route: ExtendFeatureCollection) => {
+        const { properties, features } = route;
         if (properties?.active) {
           const bounds = getBounds(route);
           map.fitBounds(bounds, { padding: 20 });
         }
-        const id = `rendered-path-source-${properties.id}`;
+        const id = `rendered-path-source-${properties?.id}`;
         const source = map.getSource(id);
         if (source) {
           // @ts-ignore
@@ -177,10 +108,10 @@ export default function MapEditor({ routes }: MapEditorProps) {
             type: "geojson",
             data: route,
           });
-          // display the matched paths from the service
           map.addLayer({
-            id: id,
+            id: `${id}-outline`,
             type: "line",
+            layout: {},
             source: id,
             paint: {
               'line-color': '#16a34a',
@@ -188,26 +119,41 @@ export default function MapEditor({ routes }: MapEditorProps) {
             }
           });
         }
+        if (draw !== undefined) {
+          console.log('draw', draw)
+          features.forEach((feature, idx) => {
+            feature.id = `rendered-draw-source-${properties?.id}-${idx}`;
+            console.log('feature', feature, draw);
+            draw.add(feature);
+          })
+        }
       })
     }
-    if (mapInstance.current) {
-      // addRoutes();
-    } else {
-      initMap(31.266184495845565, 121.48002838061575);
-      // // TODO: use server api to get default deo by ip
-      // if (!navigator.geolocation) {
-      //   console.error(`Your browser doesn't support Geolocation`);
-      // }
-      // navigator.geolocation.getCurrentPosition(function onSuccess(position) {
-      //   const {
-      //     latitude,
-      //     longitude
-      //   } = position.coords;
-      //   initMap(latitude, longitude)
-      // }, function onError() {
-      //   initMap(0, 0)
-      // });
+
+    function initMap() {
+      // initPolygon();
+      addRoutes();
     }
-  }, [routes]);
-  return <div id="map-content" ref={mapRef}></div>;
+  }, [routes, center]);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      console.error(`Your browser doesn't support Geolocation`);
+    }
+    navigator.geolocation.getCurrentPosition(function onSuccess(position) {
+      const {
+        latitude,
+        longitude
+      } = position.coords;
+      setCenter([longitude, latitude])
+    }, function onError() {
+      setCenter([0, 0])
+    });
+  }, [])
+  return <>
+    <div id="map-content" ref={mapRef}></div>
+    <div className='tip'>
+      <span>Tip: Click the map to draw a polygon.</span>
+    </div>
+  </>;
 }
