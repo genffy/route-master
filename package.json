@@ -2,8 +2,12 @@
   "name": "route-master",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "find . -name 'node_modules' -exec rm -rf '{}' \\;",
     "app:dev": "pnpm run -C packages/editor-app dev"
@@ -17,9 +21,21 @@
   },
   "packageManager": "pnpm@9.4.0",
   "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@tauri-apps/api": ">=2.0.0-beta.0",
+    "@tauri-apps/plugin-shell": ">=2.0.0-beta.0",
     "@garmin/fitsdk": "^21.141.0"
   },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1",
+    "@tauri-apps/cli": ">=2.0.0-beta.0"
+  },
   "volta": {
-    "node": "18.20.3"
+    "node": "20.11.1"
   }
 }
