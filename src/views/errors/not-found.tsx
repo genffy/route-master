@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { ArrowLeft as ArrowLeftIcon, Link } from '@mui/icons-material';
 
 import { config } from '@/config';
-import { paths } from '@/paths';
+import { paths } from '@/config';
 
 export const metadata = { title: `Not found | Errors | ${config.site.name}` };
 

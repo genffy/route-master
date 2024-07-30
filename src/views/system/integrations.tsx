@@ -9,9 +9,9 @@ import { FileDownload as DownloadIcon, PlusOne as PlusIcon, Upload as UploadIcon
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import { IntegrationCard } from '@/components/dashboard/integrations/integrations-card';
-import type { Integration } from '@/components/dashboard/integrations/integrations-card';
-import { CompaniesFilters } from '@/components/dashboard/integrations/integrations-filters';
+import { IntegrationCard } from '@/components/system/integrations/integrations-card';
+import type { Integration } from '@/components/system/integrations/integrations-card';
+import { CompaniesFilters } from '@/components/system/integrations/integrations-filters';
 
 export const metadata = { title: `Integrations | Dashboard | ${config.site.name}` };
 

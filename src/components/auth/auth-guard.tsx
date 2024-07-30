@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Alert from '@mui/material/Alert';
 
-import { paths } from '@/paths';
+import { paths } from '@/config';
 import { logger } from '@/lib/default-logger';
 import { useUser } from '@/hooks/use-user';
 import { useNavigate } from 'react-router-dom';

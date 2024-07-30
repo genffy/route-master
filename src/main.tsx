@@ -5,80 +5,90 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import ErrorPage from "./views/error-page";
-import DashboardLayout from "./views/dashboard/layout";
-import Dashboard from "./views/dashboard/page";
-import Account from "./views/dashboard/account/page";
-import Setting from "./views/dashboard/settings/page";
-import Integration from "./views/dashboard/integrations/page";
-import Customer from "./views/dashboard/customers/page";
-import SignIn from "./views/auth/sign-in/page";
-import SignUp from "./views/auth/sign-up/page";
-import RestPassword from "./views/auth/reset-password/page";
-import App from "./App";
-import Layout from "./views/layout";
+import NotFound from "./views/errors/not-found";
+
+import Dashboard from "./views/dashboard";
+
+import Account from "./views/system/account";
+import Setting from "./views/system/settings";
+import Integration from "./views/system/integrations";
+
+import Customer from "./views/dashboard/records/page";
+import SignIn from "./views/auth/sign-in";
+import SignUp from "./views/auth/sign-up";
+import RestPassword from "./views/auth/reset-password";
+
+import DashboardLayout from "./components/dashboard/_layout";
+import AuthLayout from "./components/auth/layout";
+import SystemLayout from "./components/system/_layout";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
-    errorElement: <ErrorPage />,
+    element: <DashboardLayout />,
+    errorElement: <NotFound />,
     children: [
       {
-        index: true,
-        element: <App />
-      },
-      {
         path: "/dashboard",
-        element: <DashboardLayout />,
         children: [
           {
+            path: "",
             index: true,
             id: "overview",
             element: <Dashboard />
           },
           {
-            path: "account",
-            id: "account",
-            element: <Account />
-          },
-          {
-            path: "customers",
-            id: "customers",
+            path: "records",
             element: <Customer />
           },
-          {
-            path: "integrations",
-            id: "integrations",
-            element: <Integration />
-          },
-          {
-            path: "settings",
-            id: "settings",
-            element: <Setting />
-          }
         ]
       },
+    ],
+  },
+  {
+    path: "system",
+    element: <SystemLayout />,
+    errorElement: <NotFound />,
+    children: [
       {
-        path: "auth",
-        children: [
-          {
-            path: "sign-in",
-            element: <SignIn />
-          },
-          {
-            path: "sign-up",
-            element: <SignUp />
-          },
-          {
-            path: "reset-password",
-            element: <RestPassword />
-          },
-        ]
+        index: true,
+        path: "",
+        element: <Account />
+      },
+      {
+        path: "account",
+        element: <Account />
+      },
+      {
+        path: "integrations",
+        element: <Integration />
+      },
+      {
+        path: "settings",
+        element: <Setting />
       }
     ]
   },
-
+  {
+    path: "auth",
+    element: <AuthLayout />,
+    errorElement: <NotFound />,
+    children: [
+      {
+        index: true,
+        path: "sign-in",
+        element: <SignIn />
+      },
+      {
+        path: "sign-up",
+        element: <SignUp />
+      },
+      {
+        path: "reset-password",
+        element: <RestPassword />
+      },
+    ]
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

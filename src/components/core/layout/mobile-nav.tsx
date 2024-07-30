@@ -3,7 +3,7 @@ import { Box, Link, Button, Divider, Drawer, Stack, Typography } from '@mui/mate
 import { ArrowBackSharp as ArrowSquareUpRightIcon, ArrowUpwardSharp as CaretUpDownIcon } from '@mui/icons-material';
 
 import type { NavItemConfig } from '@/types/nav';
-import { paths } from '@/paths';
+import { paths } from '@/config';
 import { isNavItemActive } from '@/lib/is-nav-item-active';
 import { Logo } from '@/components/core/logo';
 

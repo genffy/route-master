@@ -8,7 +8,7 @@ import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import { Settings as GearSixIcon, Logout as SignOutIcon, Person as UserIcon } from '@mui/icons-material';
 
-import { paths } from '@/paths';
+import { paths } from '@/config';
 import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
 import { useUser } from '@/hooks/use-user';
