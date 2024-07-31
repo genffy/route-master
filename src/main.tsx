@@ -21,6 +21,7 @@ import RestPassword from "./views/auth/reset-password";
 import DashboardLayout from "./components/dashboard/_layout";
 import AuthLayout from "./components/auth/layout";
 import SystemLayout from "./components/system/_layout";
+import App from "./views/App";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,11 @@ const router = createBrowserRouter([
     element: <DashboardLayout />,
     errorElement: <NotFound />,
     children: [
+      {
+        index: true,
+        path: "",
+        element: <App />
+      },
       {
         path: "/dashboard",
         children: [
