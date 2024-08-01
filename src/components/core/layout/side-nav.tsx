@@ -85,12 +85,11 @@ export function SideNav({ navItems }: SideNavProps): React.JSX.Element {
           component="a"
           endIcon={<ArrowForward fontSize="medium" />}
           fullWidth
-          href="/system/integrations"
+          href="/"
           sx={{ mt: 2 }}
-          target="_blank"
           variant="contained"
         >
-          Sync Data
+          Manage Routes
         </Button>
       </Stack>
     </Box>

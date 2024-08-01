@@ -144,8 +144,5 @@ export default function MapEditor({ routes }: MapEditorProps) {
   }, [])
   return <>
     <div id="map-content" ref={mapRef}></div>
-    <div className='tip'>
-      <span>Tip: Click the map to draw a polygon.</span>
-    </div>
   </>;
 }

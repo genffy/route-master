@@ -1,5 +1,6 @@
 
-import { Description } from '@mui/icons-material'
+import { CloudUploadOutlined } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material';
 import {
   useState,
   useCallback,
@@ -33,15 +34,24 @@ export default function Uploader({
     onDrop,
   })
   return (
-    <div className="flex items-center justify-center w-full"  {...getRootProps()}>
-      <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-24 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 dark:text-gray-400">
-        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-          <Description></Description>
-          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">FIT, GPX</p>
-        </div>
-        <input id="dropzone-file" name='dropzone-file' {...getInputProps()} />
-      </label>
-    </div>
+    <Box sx={{
+      border: '1px dashed #9ca3af',
+      borderRadius: '0.25rem',
+      padding: '0.5rem',
+      backgroundColor: isDragActive ? '#9ca3af' : '#f3f4f6',
+      color: isDragActive ? 'white' : '#9ca3af',
+      outline: 'none',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+    }} {...getRootProps()}>
+      <CloudUploadOutlined></CloudUploadOutlined>
+      <Typography sx={{
+        marginLeft: '0.5rem',
+        cursor: 'pointer',
+      }}>Click to upload or drag and drop</Typography>
+      <input id="dropzone-file" name='dropzone-file' {...getInputProps()} />
+    </Box>
   )
 }

@@ -18,7 +18,6 @@ export default function FileList({ onLoaded }: FileListProps) {
   const [active, setActive] = useState<File | null>(filesData.getData()[0])
 
   async function fileChangeHandler(idx: number = 0) {
-
     const actives: any[] = []
     for (const file of filesData.getData()) {
       const content: ExtendFeatureCollection = await decodeFile(file)
