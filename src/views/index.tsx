@@ -254,7 +254,7 @@ export default function App() {
             </Stack>
             <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
             <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-              <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+              <List sx={{ width: '100%', height: '100%', bgcolor: 'var(--mui-palette-neutral-950)' }}>
                 {files.map((file: File, idx: number) => {
                   const labelId = `checkbox-list-label-${file.name}`;
 
@@ -262,17 +262,19 @@ export default function App() {
                     <ListItem
                       key={file.name}
                       secondaryAction={
-                        <IconButton edge="end" aria-label="comments" onClick={() => removeHandler(file)} >
-                          <Delete />
+                        <IconButton edge="end" aria-label="delete" onClick={() => removeHandler(file)} >
+                          <Delete sx={{ color: 'var(--mui-palette-text-secondary)' }} />
                         </IconButton>
                       }
                       disablePadding
                     >
                       <ListItemButton role={undefined} onClick={() => onSelectHandler(file, idx)} dense>
-                        <ListItemIcon>
+                        <ListItemIcon sx={{
+                          minWidth: 'auto',
+                        }}>
                           <Checkbox
                             edge="start"
-                            checked={routes.indexOf(file.name) !== -1}
+                            checked={routes.some(({ properties }: ExtendFeatureCollection) => properties?.name === file.name)}
                             tabIndex={-1}
                             disableRipple
                             inputProps={{ 'aria-labelledby': labelId }}
