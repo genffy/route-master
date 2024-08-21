@@ -1,43 +1,45 @@
-import { Fragment, useMemo, useState } from "react";
+import { useState, useReducer } from "react";
 import { useNavigate, type RouteObject } from "react-router-dom";
 
 import MapEditor from "@/components/core/map-editor";
-import { Box, Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, GlobalStyles, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack } from "@mui/material";
+import { Box, Button, Checkbox, Divider, GlobalStyles, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack } from "@mui/material";
 import BaseLayout from "@/components/core/layout/base";
 import { Logo } from "@/components/core/logo";
 import { KeyboardArrowDownOutlined, ArrowForward, Delete } from "@mui/icons-material";
-import Uploader from "@/components/core/file-list/uploader";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
-import { PresistFileData } from '@/lib/utils';
 import { ExtendFeatureCollection } from "@/components/core/map-editor/types";
 import { decodeFile } from "@/lib/convert";
+import ImportDialog from "@/components/core/file-list/import-dialog";
+const [tasks, dispatch] = useReducer(
+  tasksReducer,
+  initialTasks
+);
 
-const filesData = new PresistFileData()
-
-interface SyncDataMenuProps {
-  updateHandler: (files: File[]) => void;
+function handleAddTask(text) {
+  dispatch({
+    type: 'added',
+    id: nextId++,
+    text: text,
+  });
 }
 
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'name', headerName: 'Name', width: 130 },
-  { field: 'size', headerName: 'Size', width: 130 },
-  { field: 'type', headerName: 'Type', width: 130 },
-  { field: 'duration', headerName: 'Duration', width: 130 },
-  {
-    field: 'date',
-    headerName: 'CreateTime',
-    type: 'string',
-    width: 90,
-  },
-];
+function handleChangeTask(task) {
+  dispatch({
+    type: 'changed',
+    task: task
+  });
+}
 
-function SyncDataMenu({ updateHandler }: SyncDataMenuProps) {
+function handleDeleteTask(taskId) {
+  dispatch({
+    type: 'deleted',
+    id: taskId
+  });
+}
+function SyncDataMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const route = useNavigate();
-  const [files, setFiles] = useState<File[]>([])
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -49,39 +51,9 @@ function SyncDataMenu({ updateHandler }: SyncDataMenuProps) {
     route('/system/account');
   }
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-
   const handleClickOpen = () => {
-    setDialogOpen(true);
     handleClose();
   };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
-  async function chooseFileHandler(files: File[]) {
-    filesData.saveData(files)
-    setFiles(files)
-  }
-
-  function handleDialogConfirm() {
-    setDialogOpen(false);
-    updateHandler(files);
-  }
-
-  const rows = useMemo(() => {
-    return files.map((file, idx) => {
-      return {
-        id: idx,
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        duration: '123',
-        date: file.lastModified,
-      }
-    })
-  }, [files])
 
   return (
     <>
@@ -118,41 +90,6 @@ function SyncDataMenu({ updateHandler }: SyncDataMenuProps) {
         <MenuItem onClick={handleClickOpen}>Upload / Import</MenuItem>
         <MenuItem onClick={goConfigAccount}>Config Account</MenuItem>
       </Menu>
-      <Fragment>
-        <Dialog
-          disableEscapeKeyDown
-          open={dialogOpen}
-          maxWidth="xl"
-          onClose={(_event: object, reason: string) => {
-            if (['escapeKeyDown', 'backdropClick'].includes(reason)) {
-              return;
-            }
-            handleDialogClose();
-          }}
-        >
-          <DialogTitle>
-            Upload  <Chip color="primary" size="small" label=".fit/gpx" />
-          </DialogTitle>
-          <DialogContent>
-            <Uploader onChange={chooseFileHandler}></Uploader>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>Cancel</Button>
-            <Button type="submit" onClick={handleDialogConfirm}>Import</Button>
-          </DialogActions>
-        </Dialog>
-      </Fragment>
     </>
   );
 }
@@ -161,6 +98,7 @@ export default function App() {
   const [routes, setRoutes] = useState<any>([]);
   const [files, setFiles] = useState<File[]>([])
   const [active, setActive] = useState<File | null>(null)
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   function onLoadHandler(files: File[]) {
     console.log('onLoadHandler', files)
@@ -196,6 +134,10 @@ export default function App() {
   function onSelectHandler(file: File, idx: number) {
     setActive(file)
     fileChangeHandler(idx)
+  }
+
+  function onDialogClose(values: File[], open: boolean) {
+    setDialogOpen(open);
   }
 
   return (
@@ -250,7 +192,7 @@ export default function App() {
             }}
           >
             <Stack spacing={2} sx={{ p: 1 }}>
-              <SyncDataMenu updateHandler={onLoadHandler} />
+              <SyncDataMenu />
             </Stack>
             <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
             <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
@@ -306,6 +248,7 @@ export default function App() {
           </Box>
         </Box>
       </BaseLayout>
+      <ImportDialog open={dialogOpen} onClose={onDialogClose} />
     </>
   );
 }
