@@ -1,0 +1,3 @@
+function activitiesReducer(activities, action) {
+
+}

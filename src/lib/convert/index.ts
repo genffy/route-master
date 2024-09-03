@@ -47,7 +47,7 @@ function decoderFitFile(buffer: ArrayBuffer) {
 const SEMICIRCLE = 11930465;
 function convertFitToGeojson(data: any): Feature<LineString> {
   // typeof geoJSON
-  const recordMesgs = data && data.recordMesgs.filter((item: any) => item.positionLong != undefined && item.positionLat != undefined)
+  const recordMesgs = data && data.recordMesgs && data.recordMesgs.filter((item: any) => item.positionLong != undefined && item.positionLat != undefined) || [];
   const feature: Feature<LineString> = {
     type: 'Feature',
     properties: {},

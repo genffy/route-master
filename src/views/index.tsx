@@ -1,110 +1,23 @@
-import { useState, useReducer } from "react";
+import { useState } from "react";
 import { useNavigate, type RouteObject } from "react-router-dom";
 
 import MapEditor from "@/components/core/map-editor";
-import { Box, Button, Checkbox, Divider, GlobalStyles, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack } from "@mui/material";
+import { Box, Button, Checkbox, Divider, GlobalStyles, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from "@mui/material";
 import BaseLayout from "@/components/core/layout/base";
-import { Logo } from "@/components/core/logo";
-import { KeyboardArrowDownOutlined, ArrowForward, Delete } from "@mui/icons-material";
+
+import { ArrowForward, Delete } from "@mui/icons-material";
 
 import { ExtendFeatureCollection } from "@/components/core/map-editor/types";
 import { decodeFile } from "@/lib/convert";
 import ImportDialog from "@/components/core/file-list/import-dialog";
-const [tasks, dispatch] = useReducer(
-  tasksReducer,
-  initialTasks
-);
-
-function handleAddTask(text) {
-  dispatch({
-    type: 'added',
-    id: nextId++,
-    text: text,
-  });
-}
-
-function handleChangeTask(task) {
-  dispatch({
-    type: 'changed',
-    task: task
-  });
-}
-
-function handleDeleteTask(taskId) {
-  dispatch({
-    type: 'deleted',
-    id: taskId
-  });
-}
-function SyncDataMenu() {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const route = useNavigate();
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  function goConfigAccount() {
-    route('/system/account');
-  }
-
-  const handleClickOpen = () => {
-    handleClose();
-  };
-
-  return (
-    <>
-      <Button
-        id='sync-data-button'
-        startIcon={<Logo color="light" height={16} width={16} />}
-        endIcon={<KeyboardArrowDownOutlined fontSize="medium" />}
-        fullWidth
-        aria-controls={open ? 'sync-data-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        sx={{ justifyContent: 'space-between' }}
-        variant="contained"
-        onClick={handleClick}
-
-      >Sync Data</Button>
-      <Menu
-        id="sync-data-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'sync-data-button',
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <MenuItem onClick={handleClickOpen}>Upload / Import</MenuItem>
-        <MenuItem onClick={goConfigAccount}>Config Account</MenuItem>
-      </Menu>
-    </>
-  );
-}
+import SyncDataMenu from "@/components/core/sync-data-menu";
 
 export default function App() {
   const [routes, setRoutes] = useState<any>([]);
   const [files, setFiles] = useState<File[]>([])
   const [active, setActive] = useState<File | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  function onLoadHandler(files: File[]) {
-    console.log('onLoadHandler', files)
-    setFiles(files);
-    fileChangeHandler();
-  }
+  const route = useNavigate();
 
   async function fileChangeHandler(idx: number = 0) {
     const actives: any[] = []
@@ -137,7 +50,19 @@ export default function App() {
   }
 
   function onDialogClose(values: File[], open: boolean) {
+    setFiles(values);
     setDialogOpen(open);
+  }
+
+  function sysDataMenuEventHandler(event: string, data?: any) {
+    switch (event) {
+      case 'dialog':
+        setDialogOpen(true);
+        break;
+      case 'route':
+        route(data);
+        break;
+    }
   }
 
   return (
@@ -192,7 +117,7 @@ export default function App() {
             }}
           >
             <Stack spacing={2} sx={{ p: 1 }}>
-              <SyncDataMenu />
+              <SyncDataMenu onEvent={sysDataMenuEventHandler} />
             </Stack>
             <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
             <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
@@ -216,7 +141,6 @@ export default function App() {
                         }}>
                           <Checkbox
                             edge="start"
-                            checked={routes.some(({ properties }: ExtendFeatureCollection) => properties?.name === file.name)}
                             tabIndex={-1}
                             disableRipple
                             inputProps={{ 'aria-labelledby': labelId }}
