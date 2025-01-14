@@ -4,7 +4,7 @@ import { PresistFileData } from '@/lib/utils';
 import { Clear } from '@mui/icons-material';
 import { Box, IconButton, Divider } from '@mui/material';
 import { decodeFile } from '@/lib/convert';
-import type { ExtendFeatureCollection } from '@/components/core/map-editor/types';
+import type { ExtendFeatureCollection } from '@/components/map-editor/types';
 
 export type FileListProps = {
   onLoaded?: (actives: any[]) => void;

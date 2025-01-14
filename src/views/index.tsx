@@ -1,23 +1,21 @@
 import { useState } from "react";
-import { useNavigate, type RouteObject } from "react-router-dom";
 
-import MapEditor from "@/components/core/map-editor";
+import MapEditor from "@/components/map-editor";
 import { Box, Button, Checkbox, Divider, GlobalStyles, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from "@mui/material";
-import BaseLayout from "@/components/core/layout/base";
+import BaseLayout from "@/components/layout/base";
 
 import { ArrowForward, Delete } from "@mui/icons-material";
 
-import { ExtendFeatureCollection } from "@/components/core/map-editor/types";
+import { ExtendFeatureCollection } from "@/components/map-editor/types";
 import { decodeFile } from "@/lib/convert";
-import ImportDialog from "@/components/core/file-list/import-dialog";
-import SyncDataMenu from "@/components/core/sync-data-menu";
+import ImportDialog from "@/components/file-list/import-dialog";
+import SyncDataMenu from "@/components/sync-data-menu";
 
 export default function App() {
   const [routes, setRoutes] = useState<any>([]);
   const [files, setFiles] = useState<File[]>([])
   const [active, setActive] = useState<File | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false);
-  const route = useNavigate();
 
   async function fileChangeHandler(idx: number = 0) {
     const actives: any[] = []
@@ -60,7 +58,7 @@ export default function App() {
         setDialogOpen(true);
         break;
       case 'route':
-        route(data);
+        // route(data);
         break;
     }
   }
@@ -177,9 +175,3 @@ export default function App() {
   );
 }
 
-export const routes: RouteObject[] = [
-  {
-    path: "/",
-    element: <App />,
-  },
-];
