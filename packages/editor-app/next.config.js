@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     domains: ["lh3.googleusercontent.com", "vercel.com"],
   },
@@ -9,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: "/github",
-        destination: "https://github.com/madaotech/route-master",
+        destination: "https://github.com/genffy/route-master",
         permanent: false,
       },
     ];

@@ -3,9 +3,9 @@ import toGeoJSON from '@mapbox/togeojson';
 
 import type { FeatureCollection, Feature, LineString } from 'geojson';
 
-export async function decodeFile(file: Blob): Promise<FeatureCollection<LineString>> {
+export async function decodeFile(file: File | Blob): Promise<FeatureCollection<LineString>> {
   // detect file type
-  const fileType = file.type || file.name.split('.').pop();
+  const fileType = file.type || (file instanceof File ? file.name.split('.').pop() : 'unknown');
   const buffer = Buffer.from(await file.arrayBuffer());
   console.log('fileType', fileType)
   let geo: FeatureCollection<LineString> = {

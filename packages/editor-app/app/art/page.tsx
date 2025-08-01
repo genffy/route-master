@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from "react";
-import { Heading } from "@radix-ui/themes";
 
 export default function Art() {
   const [routes, setRoutes] = useState<any>([]);
@@ -10,7 +9,7 @@ export default function Art() {
   }
   return (
     <main className="min-h-screen w-full">
-      <Heading>map art run</Heading>
+      <h1 className="text-2xl font-bold">map art run</h1>
     </main>
   );
 }

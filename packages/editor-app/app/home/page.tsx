@@ -6,17 +6,13 @@ import ComponentGrid from "@/components/home/component-grid";
 import Image from "next/image";
 import Nav from "@/components/layout/nav";
 import Footer from "@/components/layout/footer";
-import { Suspense } from "react";
 
 export default async function Home() {
 
   return (
     <>
       <div className="fixed h-screen w-full bg-gradient-to-br from-indigo-50 via-white to-cyan-100" />
-      <Suspense fallback="...">
-        {/* @ts-expect-error Server Component */}
-        <Nav />
-      </Suspense>
+      <Nav />
       <main className="flex min-h-screen w-full flex-col items-center justify-center py-32">
         <div className="z-10 w-full max-w-xl px-5 xl:px-0">
           <h1
@@ -31,7 +27,7 @@ export default async function Home() {
           >
             <a
               className="flex max-w-fit items-center justify-center space-x-2 rounded-full border border-gray-300 bg-white px-5 py-2 text-sm text-gray-600 shadow-md transition-colors hover:border-gray-800"
-              href="https://github.com/madaotech/route-master"
+              href="https://github.com/genffy/route-master"
               target="_blank"
               rel="noopener noreferrer"
             >

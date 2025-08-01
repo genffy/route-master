@@ -1,16 +1,15 @@
 'use client';
 
 import { useState } from "react";
-import { Heading } from "@radix-ui/themes";
 
-export default function Art() {
+export default function Combine() {
   const [routes, setRoutes] = useState<any>([]);
   function onLoadHandler(geojson: any) {
     setRoutes(geojson);
   }
   return (
     <main className="min-h-screen w-full">
-      <Heading>combine multi runs</Heading>
+      <h1 className="text-2xl font-bold">combine multi runs</h1>
     </main>
   );
 }
