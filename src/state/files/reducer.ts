@@ -1,0 +1,3 @@
+function filesReducer(tasks, action) {
+
+}
