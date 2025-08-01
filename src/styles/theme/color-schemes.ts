@@ -1,6 +1,6 @@
 import type { ColorSystemOptions } from '@mui/material/styles';
 
-import { california, kepple, neonBlue, nevada, redOrange, shakespeare, stormGrey } from './colors';
+import { california, kepple, neonBlue, nevada, redOrange, shakespeare } from './colors';
 import type { ColorScheme } from './types';
 
 export const colorSchemes = {
@@ -12,9 +12,6 @@ export const colorSchemes = {
         defaultChannel: '9 10 11',
         paper: 'var(--mui-palette-neutral-900)',
         paperChannel: '19 78 72',
-        level1: 'var(--mui-palette-neutral-800)',
-        level2: 'var(--mui-palette-neutral-700)',
-        level3: 'var(--mui-palette-neutral-600)',
       },
       common: { black: '#000000', white: '#ffffff' },
       divider: 'var(--mui-palette-neutral-700)',
@@ -33,7 +30,7 @@ export const colorSchemes = {
         dark: shakespeare[500],
         contrastText: 'var(--mui-palette-common-black)',
       },
-      neutral: { ...nevada },
+      // neutral: { ...nevada }, // Removed for MUI v7 compatibility
       primary: {
         ...neonBlue,
         light: neonBlue[300],
@@ -79,9 +76,6 @@ export const colorSchemes = {
         defaultChannel: '255 255 255',
         paper: 'var(--mui-palette-common-white)',
         paperChannel: '255 255 255',
-        level1: 'var(--mui-palette-neutral-50)',
-        level2: 'var(--mui-palette-neutral-100)',
-        level3: 'var(--mui-palette-neutral-200)',
       },
       common: { black: '#000000', white: '#ffffff' },
       divider: 'var(--mui-palette-neutral-200)',
@@ -100,7 +94,7 @@ export const colorSchemes = {
         dark: shakespeare[600],
         contrastText: 'var(--mui-palette-common-white)',
       },
-      neutral: { ...stormGrey },
+      // neutral: { ...stormGrey }, // Removed for MUI v7 compatibility
       primary: {
         ...neonBlue,
         light: neonBlue[400],

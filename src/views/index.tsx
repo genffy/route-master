@@ -14,7 +14,7 @@ import SyncDataMenu from "@/components/sync-data-menu";
 export default function App() {
   const [routes, setRoutes] = useState<any>([]);
   const [files, setFiles] = useState<File[]>([])
-  const [active, setActive] = useState<File | null>(null)
+  const [_active, setActive] = useState<File | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false);
 
   async function fileChangeHandler(idx: number = 0) {
@@ -52,7 +52,7 @@ export default function App() {
     setDialogOpen(open);
   }
 
-  function sysDataMenuEventHandler(event: string, data?: any) {
+  function sysDataMenuEventHandler(event: string, _data?: any) {
     switch (event) {
       case 'dialog':
         setDialogOpen(true);
