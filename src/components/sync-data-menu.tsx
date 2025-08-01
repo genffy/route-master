@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { Logo } from "./logo";
 
-export default function SyncDataMenu({ onEvent }: { onEvent: (type: string, data?: any) => void }) {
+export default function SyncDataMenu({ onEvent: _onEvent }: { onEvent?: (type: string, data?: any) => void }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect';
+import { useLayoutEffect } from 'react';
 
 export interface NoSsrProps {
   children?: React.ReactNode;
@@ -13,7 +13,7 @@ export function NoSsr(props: NoSsrProps): React.JSX.Element {
   const { children, defer = false, fallback = null } = props;
   const [mountedState, setMountedState] = React.useState(false);
 
-  useEnhancedEffect((): void => {
+  useLayoutEffect((): void => {
     if (!defer) {
       setMountedState(true);
     }

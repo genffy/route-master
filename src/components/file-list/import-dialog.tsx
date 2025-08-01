@@ -57,7 +57,7 @@ export default function ImportFilesDialog({
     })
   }, [files])
 
-  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([]);
+  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>({ type: 'include', ids: new Set() });
   useEffect(() => {
     console.log('rowSelectionModel', rowSelectionModel)
   }, [rowSelectionModel])
@@ -98,7 +98,7 @@ export default function ImportFilesDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleDialogClose}>Cancel</Button>
-        <Button type="submit" disabled={rowSelectionModel.length === 0} onClick={handleDialogConfirm}>Import</Button>
+        <Button type="submit" disabled={rowSelectionModel.ids.size === 0} onClick={handleDialogConfirm}>Import</Button>
       </DialogActions>
     </Dialog>
   </Fragment>

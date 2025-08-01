@@ -1,4 +1,4 @@
-import type { TypographyOptions } from '@mui/material/styles/createTypography';
+// Typography configuration for MUI theme
 
 export const typography = {
   fontFamily:
@@ -14,7 +14,7 @@ export const typography = {
     fontWeight: 500,
     letterSpacing: '0.5px',
     lineHeight: 2.5,
-    textTransform: 'uppercase',
+    textTransform: 'uppercase' as const,
   },
   h1: { fontSize: '3.5rem', fontWeight: 500, lineHeight: 1.2 },
   h2: { fontSize: '3rem', fontWeight: 500, lineHeight: 1.2 },
@@ -22,4 +22,4 @@ export const typography = {
   h4: { fontSize: '2rem', fontWeight: 500, lineHeight: 1.2 },
   h5: { fontSize: '1.5rem', fontWeight: 500, lineHeight: 1.2 },
   h6: { fontSize: '1.125rem', fontWeight: 500, lineHeight: 1.2 },
-} satisfies TypographyOptions;
+};

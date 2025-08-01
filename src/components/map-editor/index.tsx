@@ -16,7 +16,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZ2VuZmZ5IiwiYSI6ImNsazZyeWwxYTAxbDEzZm53NjhyZ
 
 export default function MapEditor({ routes }: MapEditorProps) {
   const mapRef = useRef(null);
-  const mapInstance = useRef<mapboxgl.Map>();
+  const mapInstance = useRef<mapboxgl.Map | null>(null);
   const [sources, setSources] = useState<string[]>([]);
   const [center, setCenter] = useState<LngLatLike>([0, 0]);
 
