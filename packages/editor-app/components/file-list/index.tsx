@@ -56,29 +56,27 @@ export default function FileList({ onLoaded }: FileListProps) {
   }
 
   return <div className='absolute top-4 left-4 z-20 w-80'>
-    <div className="w-full h-[calc(100%-1rem)]">
-      <div className="relative w-full max-w-2xl bg-white rounded-lg shadow dark:bg-gray-700">
-        <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-          <p className="text-xl font-semibold text-gray-900 dark:text-white">.fit/gpx</p>
-        </div>
-        <div className='container w-full max-h-96 overflow-auto p-4'>
-          <Uploader onChange={chooseFileHandler}></Uploader>
-          {files.length > 0 && <>
-            <Separator className='my-4' color="indigo" size="4" />
-            <Flex direction="column" gap="4">
-              {
-                files.map((file, idx) => (
-                  <Flex p="2" direction="row" align="center" justify="between" width="100%" className={`bg-sky-200 hover:bg-sky-300 cursor-pointer rounded-md text-slate-500 ${active?.name === file.name ? 'bg-sky-300' : ''}`} key={idx} onClick={() => onSelectHandler(file, idx)}>
-                    <Text weight="bold">{file.name}</Text>
-                    <IconButton size={'1'} type="button" className='cursor-pointer' onClick={() => removeHandler(file)} >
-                      <Cross1Icon></Cross1Icon>
-                    </IconButton>
-                  </Flex>
-                ))
-              }
-            </Flex>
-          </>}
-        </div>
+    <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+      <div className="p-4 border-b border-gray-100">
+        <p className="text-lg font-medium text-gray-900">.fit/gpx</p>
+      </div>
+      <div className='p-4 max-h-96 overflow-auto'>
+        <Uploader onChange={chooseFileHandler}></Uploader>
+        {files.length > 0 && <>
+          <div className='my-4 h-px bg-gray-200'></div>
+          <Flex direction="column" gap="2">
+            {
+              files.map((file, idx) => (
+                <Flex p="3" direction="row" align="center" justify="between" width="100%" className={`bg-gray-50 hover:bg-gray-100 cursor-pointer rounded-lg transition-colors ${active?.name === file.name ? 'bg-blue-50 border border-blue-200' : ''}`} key={idx} onClick={() => onSelectHandler(file, idx)}>
+                  <Text size="2" weight="medium" className="text-gray-700">{file.name}</Text>
+                  <IconButton size={'1'} variant="ghost" className='cursor-pointer text-gray-400 hover:text-gray-600' onClick={(e) => { e.stopPropagation(); removeHandler(file) }} >
+                    <Cross1Icon></Cross1Icon>
+                  </IconButton>
+                </Flex>
+              ))
+            }
+          </Flex>
+        </>}
       </div>
     </div>
   </div>

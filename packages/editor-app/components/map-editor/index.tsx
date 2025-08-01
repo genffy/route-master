@@ -23,7 +23,7 @@ function pointsEqual([aLat, aLng]: [number, number], [bLat, bLng]: [number, numb
 
 export default function MapEditor({ routes }: MapEditorProps) {
   const mapRef = useRef(null);
-  const mapInstance = useRef<mapboxgl.Map>();
+  const mapInstance = useRef<mapboxgl.Map | null>(null);
   const [sources, setSources] = useState<string[]>([]);
   const [roundedArea, setRoundedArea] = useState();
   const [center, setCenter] = useState<LngLatLike>([0, 0]);

@@ -2,16 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useScroll } from "react-use";
 import { useSignInModal } from "./sign-in-modal";
 import UserDropdown from "./user-dropdown";
 import { Session } from "next-auth";
 import { useRef } from "react";
+import useScroll from "@/lib/hooks/use-scroll";
 
 export default function NavBar({ session }: { session: Session | null }) {
   const { SignInModal, setShowSignInModal } = useSignInModal();
-  const scrollRef = useRef(null);
-  const scrolled = useScroll(scrollRef);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrolled = useScroll(50);
   return (
     <>
       <SignInModal />
