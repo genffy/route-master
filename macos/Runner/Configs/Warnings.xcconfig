@@ -1,0 +1,2 @@
+WARNING_CFLAGS = -Wall -Wconditional-uninitialized -Wnullable-to-nonnull-conversion -Wmissing-method-return-type -Woverlength-strings
+GCC_TREAT_WARNINGS_AS_ERRORS = YES

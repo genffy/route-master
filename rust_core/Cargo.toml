@@ -1,0 +1,56 @@
+[package]
+name = "runhub_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "runhub_core"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+# Database
+rusqlite = { version = "0.29", features = ["bundled", "chrono"] }
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "chrono", "uuid"] }
+
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Date and time
+chrono = { version = "0.4", features = ["serde"] }
+
+# HTTP client
+reqwest = { version = "0.11", features = ["json", "cookies"] }
+
+# Cryptography
+aes-gcm = "0.10"
+argon2 = "0.5"
+rand = "0.8"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# UUID generation
+uuid = { version = "1.4", features = ["v4", "serde"] }
+
+# GPX/FIT file parsing
+gpx = "0.8"
+fitparser = "0.3"
+
+# Logging
+log = "0.4"
+env_logger = "0.10"
+
+# Async trait for connector interface
+async-trait = "0.1"
+
+# Flutter Rust Bridge (will be added when configured)
+# flutter_rust_bridge = "1.0"
+
+[dev-dependencies]
+tempfile = "3.8"
+tokio-test = "0.4"
